@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!, // Используем API-ключ из .env.local
+  apiKey: process.env.OPENAI_API_KEY!, 
 });
 
 export async function POST(request: Request) {
@@ -16,8 +16,9 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ recommendation: response.choices[0].text });
-  } catch (error) {
-    console.error("Error fetching GPT response:", error);
-    return NextResponse.json({ error: "Failed to fetch GPT response" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Error fetching GPT response:", error); 
+    return NextResponse.json({ error: error.message || "Failed to fetch GPT response" }, { status: 500 });
   }
 }
+
