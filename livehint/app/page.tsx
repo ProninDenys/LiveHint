@@ -9,6 +9,7 @@ export default function Home() {
   const [recommendation, setRecommendation] = useState<string>(""); // GPT recommendation
   const [language, setLanguage] = useState<string>("en-US"); // Language state
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State for modal
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false); // Dark mode state
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   const handleCopy = () => {
@@ -104,19 +105,32 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8 gap-8">
-      <h1 className="text-2xl font-bold">Welcome to LiveHint!</h1>
+    <div
+      className={`flex flex-col items-center justify-center min-h-screen p-8 gap-8 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-blue-50 text-gray-800"
+      }`}
+    >
+      <h1 className="text-3xl font-bold">Welcome to LiveHint!</h1>
       <p className="text-lg text-center">
         {isRecording ? "Recording in progress..." : "Click the button to start recording."}
       </p>
 
+      <button
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        className="absolute top-4 right-4 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all"
+      >
+        {isDarkMode ? "Light Mode" : "Dark Mode"}
+      </button>
+
       <div className="mb-4">
-        <label htmlFor="language" className="mr-2">Select Language:</label>
+        <label htmlFor="language" className="mr-2 text-gray-900 dark:text-gray-100">
+          Select Language:
+        </label>
         <select
           id="language"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
-          className="border rounded p-2"
+          className="border border-gray-400 dark:border-gray-600 rounded p-2 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-700 shadow-sm"
         >
           <option value="en-US">English</option>
           <option value="es-ES">Spanish</option>
@@ -127,14 +141,23 @@ export default function Home() {
 
       <button
         onClick={isRecording ? handleStopRecording : handleStartRecording}
-        className={`px-6 py-3 text-white rounded-lg transition ${
-          isRecording ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+        className={`px-6 py-3 text-white rounded-lg transition-all duration-300 transform ${
+          isRecording
+            ? "bg-red-500 hover:bg-red-600 scale-105"
+            : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 scale-100 hover:scale-105"
         }`}
       >
         {isRecording ? "Stop Recording" : "Start Recording"}
       </button>
 
-      <div className="w-full max-w-2xl p-4 border rounded-lg mt-8">
+      <button
+        onClick={handleCopy}
+        className="mt-4 px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-lg hover:from-green-500 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105"
+      >
+        Copy Recommendation
+      </button>
+
+      <div className="w-full max-w-2xl p-4 border border-gray-600 rounded-lg mt-8 bg-white shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Recognized Text:</h2>
         <p className="text-gray-700">
           {transcript}
@@ -154,12 +177,6 @@ export default function Home() {
           >
             Show Full Recommendation
           </button>
-          <button
-            onClick={handleCopy}
-            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-          >
-            Copy Recommendation
-          </button>
         </div>
       )}
 
@@ -178,6 +195,11 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet"
+      />
     </div>
   );
 }
